@@ -1,0 +1,29 @@
+Student: Apetroaie Razvan-Mihai
+Grupa: 323CA
+
+
+	Functiile auxiliare folosite la administrarea tabelelor si testarea adreselor au fost implementate in fisierul "skel.c" si declarate in
+header-ul "skel.h", alaturi de definitiile structurilor pentru intrarea tabelei ARP "arpEntry", intrarea tabelei de rutare "routeEntry" si 
+continutul pachetelor de tip ARP "requestPayload". Tabela ARP se construieste dinamic in urma procesarii pachetelor ARP request si ARP reply, insa 
+aceasta poate fi initializata si din fisierul text prin "parseArpTable". Tabela de rutare este parsata la inceputul rularii si este salvata in 
+"routingTable" continand adresele sub forma de intregi. Functia "quickSort" se foloseste de "partition" pentru sortarea tabelei de rutare dupa 
+prefix in scopul utilizarii cautarii binare implementata de "binarySearch" apelata de "getRouteEntry". Prin acesta se poate realiza gasirea unei 
+intrari pe baza adresei IP destinatie cu o complexitate de O(log n). Functia "getArpEntry" extrage intrarea pe baza adresei IP, 
+"checkBroadcastAddress" verifica introducerea adresei de broadcast ca parametru, iar "checkMacAddress" verifica daca adresa MAC primita este 
+adresa router-ului.
+
+	In fisierul principal "router.c", rularea incepe prin declararea si parsarea tabelelor ARP si de rutare. Se testeaza mai intai primirea
+adresei de broadcast ca adresa MAC destinatie a pachetului primit. Daca ARP request-ul este destinat router-ului, acesta va raspunde cu un ARP 
+reply continand propria adresa MAC in "requestPayload". Daca adresa MAC destinatie a pachetului primit este adresa router-ului, se trateaza mai 
+intai cazul primirii unui pachet de tip ARP reply, apoi de tip IPv4. In cazul ARP, router-ul isi actualizeaza tabela in cazul in care pachetul 
+este destinat lui sau pachetul contine adresa unui dispozitiv local, dupa care il trimite mai departe pe ruta destinatie in cazul respectiv. In 
+cazul IPv4, router-ul verifica checksum-ul, aruncand pachetul daca nu corespunde. Daca este adresat lui, acesta va construi un pachet echo reply 
+si il va trimite la urmatoarea destinatie conform tabelei de rutare. Router-ul va solicita printr-un ARP request adresa MAC a acesteia daca nu se 
+afla in tabela ARP. Daca pachetul nu este adresat lui, router-ul va recalcula checksum-ul dupa decrementarea TTL folosind algoritmul incremental 
+din RFC 1624. Daca valoarea Time To Live a expirat, se arunca pachetul si se raspunde cu mesajul respectiv. Pachetul se trimite mai departe la 
+adresa IP indicata de tabelul de rutare si la adresa MAC indicata de tabela ARP. Daca nu se gaseste adresa din tabela de routare, se va raspunde 
+cu Unreachable Host, altfel daca nu se gaseste adresa din tabela ARP, se va trimite un ARP request, dupa care se poate trimite pachetul la adresa 
+data de ARP reply.
+
+	Fisierul "Makefile" contine suplimentar comenile "routerOn" pentru deschiderea terminalelor, "routerTest" pentru rularea testelor si
+"shutdownPort" pentru eliberarea socketului necesar prin rularea "sudo fuser -k 6653/tcp".
