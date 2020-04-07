@@ -268,8 +268,6 @@ int main(int argc, char *argv[])
 						continue;
 					}
 
-					ip_hdr->check = checksum(ip_hdr, sizeof(struct iphdr));
-
 					//se cauta urmatoarea destinatie in tabela de rutare
 					routeEntry* routeTableEntry = getRouteEntry(ip_hdr->daddr, routingTable, routeSize);
 
